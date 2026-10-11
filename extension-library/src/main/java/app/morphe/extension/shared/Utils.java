@@ -987,16 +987,8 @@ public class Utils {
                 .replaceAll("").toLowerCase(Locale.ROOT);
     }
 
-    /**
-     * Set all preferences to multiline titles if the device is not using an English variant.
-     * The English strings are heavily scrutinized and all titles fit on screen
-     * except 2 or 3 preference strings and those do not affect readability.
-     * <p>
-     * Allowing multiline for those 2 or 3 English preferences looks weird and out of place,
-     * and visually it looks better to clip the text and keep all titles 1 line.
-     */
     @SuppressWarnings("deprecation")
-    public static void setPreferenceTitlesToMultiLineIfNeeded(PreferenceGroup group) {
+    public static void setPreferenceTitlesToMultiLine(PreferenceGroup group) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return;
         }
@@ -1006,7 +998,7 @@ public class Utils {
             pref.setSingleLineTitle(false);
 
             if (pref instanceof PreferenceGroup subGroup) {
-                setPreferenceTitlesToMultiLineIfNeeded(subGroup);
+                setPreferenceTitlesToMultiLine(subGroup);
             }
         }
     }
