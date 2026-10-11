@@ -1,3 +1,10 @@
+# [1.9.0-dev.7](https://github.com/MorpheApp/morphe-patches-library/compare/v1.9.0-dev.6...v1.9.0-dev.7) (2026-10-11)
+
+
+### Bug Fixes
+
+* **Crash log patch:** Include process and memory details in crash report ([bb7afff](https://github.com/MorpheApp/morphe-patches-library/commit/bb7afff5d245864ae52a4c724b750237edeae83e))
+
 # [1.9.0-dev.6](https://github.com/MorpheApp/morphe-patches-library/compare/v1.9.0-dev.5...v1.9.0-dev.6) (2026-10-11)
 
 
