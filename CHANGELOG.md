@@ -1,3 +1,10 @@
+# [1.9.0-dev.6](https://github.com/MorpheApp/morphe-patches-library/compare/v1.9.0-dev.5...v1.9.0-dev.6) (2026-10-11)
+
+
+### Bug Fixes
+
+* Rename Utils method ([ac5eba5](https://github.com/MorpheApp/morphe-patches-library/commit/ac5eba57a0c47a4b3e54f3ba450b13786cef7b3f))
+
 # [1.9.0-dev.5](https://github.com/MorpheApp/morphe-patches-library/compare/v1.9.0-dev.4...v1.9.0-dev.5) (2026-10-11)
 
 
