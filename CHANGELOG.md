@@ -1,3 +1,10 @@
+# [1.9.0-dev.5](https://github.com/MorpheApp/morphe-patches-library/compare/v1.9.0-dev.4...v1.9.0-dev.5) (2026-10-11)
+
+
+### Bug Fixes
+
+* **FreeRegisterProvider:** Various fixes/improvements ([#65](https://github.com/MorpheApp/morphe-patches-library/issues/65)) ([af88e2d](https://github.com/MorpheApp/morphe-patches-library/commit/af88e2d92ee26e7681659e833ac8fda996d2ec17))
+
 # [1.9.0-dev.4](https://github.com/MorpheApp/morphe-patches-library/compare/v1.9.0-dev.3...v1.9.0-dev.4) (2026-10-10)
 
 
