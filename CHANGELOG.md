@@ -1,3 +1,10 @@
+# [1.9.0-dev.8](https://github.com/MorpheApp/morphe-patches-library/compare/v1.9.0-dev.7...v1.9.0-dev.8) (2026-10-12)
+
+
+### Features
+
+* **BytecodeUtils:** Add helper method to add an arbitrary number of additional registers ([ded5f49](https://github.com/MorpheApp/morphe-patches-library/commit/ded5f4939f7e049ae062f8096c633093f369940c))
+
 # [1.9.0-dev.7](https://github.com/MorpheApp/morphe-patches-library/compare/v1.9.0-dev.6...v1.9.0-dev.7) (2026-10-11)
 
 
