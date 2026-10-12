@@ -21,6 +21,8 @@
  * merchantability and fitness for a particular purpose, are disclaimed.
  */
 
+@file:Suppress("DEPRECATION")
+
 package app.morphe.util
 
 import app.morphe.patcher.extensions.InstructionExtensions.getInstruction
@@ -65,6 +67,13 @@ import java.util.EnumSet
  *                                  register before any registers are wrote to, or if the paths of
  *                                  a branch or switch statement have no common free registers.
  */
+@Deprecated(
+    "Free register utilities are now provided by Morphe Patcher",
+    ReplaceWith(
+        "getFreeRegisterProvider(index, numberOfFreeRegistersNeeded, registersToExclude)",
+        "app.morphe.patcher.util.getFreeRegisterProvider"
+    )
+)
 fun Method.getFreeRegisterProvider(index: Int, numberOfFreeRegistersNeeded: Int, registersToExclude: List<Int>) =
     FreeRegisterProvider(this, index, numberOfFreeRegistersNeeded, registersToExclude)
 
@@ -84,10 +93,21 @@ fun Method.getFreeRegisterProvider(index: Int, numberOfFreeRegistersNeeded: Int,
  *                                  register before any registers are wrote to, or if the paths of
  *                                  a branch or switch statement have no common free registers.
  */
+@Deprecated(
+    "Free register utilities are now provided by Morphe Patcher",
+    ReplaceWith(
+        "getFreeRegisterProvider(index, numberOfFreeRegistersNeeded, *registersToExclude)",
+        "app.morphe.patcher.util.getFreeRegisterProvider"
+    )
+)
 fun Method.getFreeRegisterProvider(index: Int, numberOfFreeRegistersNeeded: Int, vararg registersToExclude: Int) =
     FreeRegisterProvider(this, index, numberOfFreeRegistersNeeded, *registersToExclude)
 
 @Suppress("unused")
+@Deprecated(
+    "Free register utilities are now provided by Morphe Patcher",
+    ReplaceWith("FreeRegisterProvider", "app.morphe.patcher.util.FreeRegisterProvider")
+)
 class FreeRegisterProvider internal constructor(
     val method: Method,
     index: Int,
@@ -316,6 +336,13 @@ class FreeRegisterProvider internal constructor(
  *                                  or switch statement and the method has an unusually high amount of branching
  *                                  where no common free registers exist in all branch paths.
  */
+@Deprecated(
+    "Free register utilities are now provided by Morphe Patcher",
+    ReplaceWith(
+        "findFreeRegister(index, *registersToExclude)",
+        "app.morphe.patcher.util.findFreeRegister"
+    )
+)
 fun Method.findFreeRegister(
     index: Int,
     vararg registersToExclude: Int
@@ -345,6 +372,13 @@ fun Method.findFreeRegister(
  *                                  or switch statement and the method has an unusually high amount of branching
  *                                  where no common free registers exist in all branch paths.
  */
+@Deprecated(
+    "Free register utilities are now provided by Morphe Patcher",
+    ReplaceWith(
+        "findFreeRegister(index, registersToExclude)",
+        "app.morphe.patcher.util.findFreeRegister"
+    )
+)
 fun Method.findFreeRegister(
     index: Int,
     registersToExclude: List<Int>
@@ -621,6 +655,10 @@ private fun Method.findInstructionIndexByOffset(
 /**
  * @return The registers used by this instruction.
  */
+@Deprecated(
+    "Free register utilities are now provided by Morphe Patcher",
+    ReplaceWith("registersUsed", "app.morphe.patcher.util.registersUsed")
+)
 val Instruction.registersUsed: List<Int>
     get() = when (this) {
         is FiveRegisterInstruction -> {
@@ -664,6 +702,10 @@ private val Instruction.registersAccessed: List<Int>
  * @return The register that is written to by this instruction,
  *         or NULL if this is not a write opcode.
  */
+@Deprecated(
+    "Free register utilities are now provided by Morphe Patcher",
+    ReplaceWith("writeRegister", "app.morphe.patcher.util.writeRegister")
+)
 val Instruction.writeRegister: Int?
     get() {
         if (this.opcode !in writeOpcodes) {

@@ -24,7 +24,7 @@
  * merchantability and fitness for a particular purpose, are disclaimed.
  */
 
-@file:Suppress("unused", "SpellCheckingInspection")
+@file:Suppress("unused", "SpellCheckingInspection", "DEPRECATION")
 
 package app.morphe.util
 
@@ -213,6 +213,13 @@ fun Method.findFieldFromToString(fieldName: String) : FieldReference {
  * @param requireMatches If true and no matches exist, an exception is thrown.
  * @param block Method iteration block. Indexes are iterated from last to first.
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith(
+        "matchAllMethodIndicesForEach(requireMatches, block)",
+        "app.morphe.patcher.util.matchAllMethodIndicesForEach"
+    )
+)
 context(patchContext: BytecodePatchContext)
 fun InstructionFilter.matchAllMethodIndicesForEach(
     requireMatches: Boolean = true,
@@ -230,6 +237,10 @@ fun InstructionFilter.matchAllMethodIndicesForEach(
  *
  * An exception is thrown if no matches exist or more than 1 match exists.
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("matchSingle()", "app.morphe.patcher.util.matchSingle")
+)
 context(patchContext: BytecodePatchContext)
 fun Fingerprint.matchSingle() = matchAll(1 .. 1).first()
 
@@ -245,6 +256,13 @@ fun Fingerprint.matchSingle() = matchAll(1 .. 1).first()
  * @param requireMatches If true and no matches exist, an exception is thrown.
  * @param block Method iteration block. Indexes are iterated from last to first.
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith(
+        "matchAllMethodIndicesForEach(requireMatches, block)",
+        "app.morphe.patcher.util.matchAllMethodIndicesForEach"
+    )
+)
 context(patchContext: BytecodePatchContext)
 fun Fingerprint.matchAllMethodIndicesForEach(
     requireMatches: Boolean = true,
@@ -285,6 +303,10 @@ fun Int.toPublicAccessFlags(): Int {
  * @param method The [Method] to find.
  * @return The [MutableMethod].
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("findMutableMethodOf(method)", "app.morphe.patcher.util.findMutableMethodOf")
+)
 fun MutableClass.findMutableMethodOf(method: MethodReference) = this.methods.first {
     MethodUtil.methodSignaturesMatch(it, method)
 }
@@ -313,6 +335,13 @@ fun MutableClass.transformMethods(transform: MutableMethod.() -> MutableMethod) 
  * (patch code)
  * (original code)
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith(
+        "addInstructionsAtControlFlowLabel(insertIndex, instructions, *externalLabels)",
+        "app.morphe.patcher.util.addInstructionsAtControlFlowLabel"
+    )
+)
 fun MutableMethod.addInstructionsAtControlFlowLabel(
     insertIndex: Int,
     instructions: String,
@@ -536,11 +565,19 @@ fun BytecodePatchContext.traverseClassHierarchy(targetClass: MutableClass, callb
  * if the [Instruction] is not a [ReferenceInstruction] or the [Reference] is not of type [T].
  * @see ReferenceInstruction
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("getReference<T>()", "app.morphe.patcher.util.getReference")
+)
 inline fun <reified T : Reference> Instruction.getReference() = (this as? ReferenceInstruction)?.reference as? T
 
 /**
  * @return The mutable method for this method call reference.
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("getMutableMethod()", "app.morphe.patcher.util.getMutableMethod")
+)
 context(patchContext: BytecodePatchContext)
 fun MethodReference.getMutableMethod(): MutableMethod {
     return patchContext.mutableClassDefBy(this.definingClass).methods.first { classMethod ->
@@ -847,6 +884,13 @@ fun Method.findInstructionIndicesReversedOrThrow(opcode: Opcode): List<Int> {
  * _Returns an empty list if no indices are found_
  * @throws PatchException if no matching indices are found.
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith(
+        "findInstructionIndicesReversed(filter)",
+        "app.morphe.patcher.util.findInstructionIndicesReversed"
+    )
+)
 fun Method.findInstructionIndicesReversed(filter: InstructionFilter): List<Int> {
     val method = this
     return findInstructionIndicesReversed {
@@ -858,6 +902,13 @@ fun Method.findInstructionIndicesReversed(filter: InstructionFilter): List<Int> 
  * @return A list of indices of the instructions in reverse order.
  * @throws PatchException if no matching indices are found.
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith(
+        "findInstructionIndicesReversedOrThrow(filter)",
+        "app.morphe.patcher.util.findInstructionIndicesReversedOrThrow"
+    )
+)
 fun Method.findInstructionIndicesReversedOrThrow(filter: InstructionFilter): List<Int> {
     val indexes = findInstructionIndicesReversed(filter)
     if (indexes.isEmpty()) throw PatchException("No matching instructions found in: $this")
@@ -1133,6 +1184,10 @@ fun BytecodePatchContext.forEachLiteralValueInstruction(
  *
  * **Fingerprint match indexes will be increased positively by [numberOfParameterRegistersLogical]**.
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("cloneParameters()", "app.morphe.patcher.util.cloneParameters")
+)
 context(patchContext: BytecodePatchContext)
 fun Method.cloneParameters() = cloneParameters(
     patchContext.mutableClassDefBy(definingClass)
@@ -1188,6 +1243,13 @@ internal fun Method.cloneParameters(mutableClass : MutableClass) : MutableMethod
  *         to the start of the cloned method. Instruction indexes of this method, such as
  *         Fingerprint match indexes, must be increased by the number of added instructions.
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith(
+        "addFreeRegisters(numberOfAdditionalRegisters)",
+        "app.morphe.patcher.util.addFreeRegisters"
+    )
+)
 context(patchContext: BytecodePatchContext)
 fun MutableMethod.addFreeRegisters(numberOfAdditionalRegisters: Int) = addFreeRegisters(
     numberOfAdditionalRegisters,
@@ -1318,6 +1380,10 @@ fun Boolean.toHexString(): String = if (this) "0x1" else "0x0"
  * @return The number of registers for all parameters, including p0.
  * This includes 2 registers for each wide parameter.
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("numberOfParameterRegisters", "app.morphe.patcher.util.numberOfParameterRegisters")
+)
 val Method.numberOfParameterRegisters: Int
     get() {
         var count = 0
@@ -1340,6 +1406,13 @@ val Method.numberOfParameterRegisters: Int
  * @return The number of parameter registers, including p0 as 'this' if method is not static.
  *   This differs from [numberOfParameterRegisters] in that long/double parameters are counted only once each.
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith(
+        "numberOfParameterRegistersLogical",
+        "app.morphe.patcher.util.numberOfParameterRegistersLogical"
+    )
+)
 val Method.numberOfParameterRegistersLogical: Int
     get() = parameters.count() + if (AccessFlags.STATIC.isSet(accessFlags)) {
         0
@@ -1351,6 +1424,10 @@ val Method.numberOfParameterRegistersLogical: Int
  * @return the actual register number of p0 for this method.
  * Throws if the method has no implementation.
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("p0Register", "app.morphe.patcher.util.p0Register")
+)
 val Method.p0Register: Int
     get() {
         val impl = implementation ?: throw IllegalStateException("Method has no implementation: $this")
@@ -1386,6 +1463,10 @@ private const val RETURN_TYPE_MISMATCH = "Mismatch between override type and Met
  *
  * @see returnLate
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnEarly()", "app.morphe.patcher.util.returnEarly")
+)
 fun MutableMethod.returnEarly() {
     check(returnType.first() == 'V') {
         RETURN_TYPE_MISMATCH
@@ -1402,6 +1483,10 @@ fun MutableMethod.returnEarly() {
  *
  * @see returnLate
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnEarly(value)", "app.morphe.patcher.util.returnEarly")
+)
 fun MutableMethod.returnEarly(value: Boolean) {
     check(returnType.first() == 'Z') {
         RETURN_TYPE_MISMATCH
@@ -1415,6 +1500,10 @@ fun MutableMethod.returnEarly(value: Boolean) {
  *
  * @see returnLate
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnEarly(value)", "app.morphe.patcher.util.returnEarly")
+)
 fun MutableMethod.returnEarly(value: Byte) {
     check(returnType.first() == 'B') { RETURN_TYPE_MISMATCH }
     overrideReturnValue(value.toString(), false)
@@ -1426,6 +1515,10 @@ fun MutableMethod.returnEarly(value: Byte) {
  *
  * @see returnLate
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnEarly(value)", "app.morphe.patcher.util.returnEarly")
+)
 fun MutableMethod.returnEarly(value: Short) {
     check(returnType.first() == 'S') { RETURN_TYPE_MISMATCH }
     overrideReturnValue(value.toString(), false)
@@ -1437,6 +1530,10 @@ fun MutableMethod.returnEarly(value: Short) {
  *
  * @see returnLate
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnEarly(value)", "app.morphe.patcher.util.returnEarly")
+)
 fun MutableMethod.returnEarly(value: Char) {
     check(returnType.first() == 'C') { RETURN_TYPE_MISMATCH }
     overrideReturnValue(value.code.toString(), false)
@@ -1448,6 +1545,10 @@ fun MutableMethod.returnEarly(value: Char) {
  *
  * @see returnLate
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnEarly(value)", "app.morphe.patcher.util.returnEarly")
+)
 fun MutableMethod.returnEarly(value: Int) {
     check(returnType.first() == 'I') { RETURN_TYPE_MISMATCH }
     overrideReturnValue(value.toString(), false)
@@ -1459,6 +1560,10 @@ fun MutableMethod.returnEarly(value: Int) {
  *
  * @see returnLate
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnEarly(value)", "app.morphe.patcher.util.returnEarly")
+)
 fun MutableMethod.returnEarly(value: Long) {
     check(returnType.first() == 'J') { RETURN_TYPE_MISMATCH }
     overrideReturnValue("${value}L", false)
@@ -1470,6 +1575,10 @@ fun MutableMethod.returnEarly(value: Long) {
  *
  * @see returnLate
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnEarly(value)", "app.morphe.patcher.util.returnEarly")
+)
 fun MutableMethod.returnEarly(value: Float) {
     check(returnType.first() == 'F') { RETURN_TYPE_MISMATCH }
     overrideReturnValue("${value}F", false)
@@ -1481,6 +1590,10 @@ fun MutableMethod.returnEarly(value: Float) {
  *
  * @see returnLate
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnEarly(value)", "app.morphe.patcher.util.returnEarly")
+)
 fun MutableMethod.returnEarly(value: Double) {
     check(returnType.first() == 'D') { RETURN_TYPE_MISMATCH }
     overrideReturnValue(value.toString(), false)
@@ -1495,6 +1608,10 @@ fun MutableMethod.returnEarly(value: Double) {
  *
  * @see returnLate
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnEarly(value)", "app.morphe.patcher.util.returnEarly")
+)
 fun MutableMethod.returnEarly(value: String) {
     check(returnType == "Ljava/lang/String;" || returnType == "Ljava/lang/CharSequence;") {
         RETURN_TYPE_MISMATCH
@@ -1509,6 +1626,10 @@ fun MutableMethod.returnEarly(value: String) {
  * @param value Value must be `Null`.
  * @see returnLate
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnEarly(value)", "app.morphe.patcher.util.returnEarly")
+)
 fun MutableMethod.returnEarly(value: Void?) {
     val returnType = returnType.first()
     check(returnType == 'L' || returnType == '[') {
@@ -1526,6 +1647,10 @@ fun MutableMethod.returnEarly(value: Void?) {
  *
  * @see returnEarly
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnLate(value)", "app.morphe.patcher.util.returnLate")
+)
 fun MutableMethod.returnLate(value: Boolean) {
     check(this.returnType.first() == 'Z') {
         RETURN_TYPE_MISMATCH
@@ -1540,6 +1665,10 @@ fun MutableMethod.returnLate(value: Boolean) {
  *
  * @see returnEarly
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnLate(value)", "app.morphe.patcher.util.returnLate")
+)
 fun MutableMethod.returnLate(value: Byte) {
     check(returnType.first() == 'B') { RETURN_TYPE_MISMATCH }
     overrideReturnValue(value.toString(), true)
@@ -1551,6 +1680,10 @@ fun MutableMethod.returnLate(value: Byte) {
  *
  * @see returnEarly
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnLate(value)", "app.morphe.patcher.util.returnLate")
+)
 fun MutableMethod.returnLate(value: Short) {
     check(returnType.first() == 'S') { RETURN_TYPE_MISMATCH }
     overrideReturnValue(value.toString(), true)
@@ -1562,6 +1695,10 @@ fun MutableMethod.returnLate(value: Short) {
  *
  * @see returnEarly
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnLate(value)", "app.morphe.patcher.util.returnLate")
+)
 fun MutableMethod.returnLate(value: Char) {
     check(returnType.first() == 'C') { RETURN_TYPE_MISMATCH }
     overrideReturnValue(value.code.toString(), true)
@@ -1573,6 +1710,10 @@ fun MutableMethod.returnLate(value: Char) {
  *
  * @see returnEarly
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnLate(value)", "app.morphe.patcher.util.returnLate")
+)
 fun MutableMethod.returnLate(value: Int) {
     check(returnType.first() == 'I') { RETURN_TYPE_MISMATCH }
     overrideReturnValue(value.toString(), true)
@@ -1584,6 +1725,10 @@ fun MutableMethod.returnLate(value: Int) {
  *
  * @see returnEarly
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnLate(value)", "app.morphe.patcher.util.returnLate")
+)
 fun MutableMethod.returnLate(value: Long) {
     check(returnType.first() == 'J') { RETURN_TYPE_MISMATCH }
     overrideReturnValue("${value}L", true)
@@ -1595,6 +1740,10 @@ fun MutableMethod.returnLate(value: Long) {
  *
  * @see returnEarly
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnLate(value)", "app.morphe.patcher.util.returnLate")
+)
 fun MutableMethod.returnLate(value: Float) {
     check(returnType.first() == 'F') { RETURN_TYPE_MISMATCH }
     overrideReturnValue("${value}F", true)
@@ -1606,6 +1755,10 @@ fun MutableMethod.returnLate(value: Float) {
  *
  * @see returnEarly
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnLate(value)", "app.morphe.patcher.util.returnLate")
+)
 fun MutableMethod.returnLate(value: Double) {
     check(returnType.first() == 'D') { RETURN_TYPE_MISMATCH }
     overrideReturnValue(value.toString(), true)
@@ -1620,6 +1773,10 @@ fun MutableMethod.returnLate(value: Double) {
  *
  * @see returnEarly
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnLate(value)", "app.morphe.patcher.util.returnLate")
+)
 fun MutableMethod.returnLate(value: String) {
     check(returnType == "Ljava/lang/String;" || returnType == "Ljava/lang/CharSequence;") {
         RETURN_TYPE_MISMATCH
@@ -1634,6 +1791,10 @@ fun MutableMethod.returnLate(value: String) {
  * @param value Value must be `Null`.
  * @see returnEarly
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnLate(value)", "app.morphe.patcher.util.returnLate")
+)
 fun MutableMethod.returnLate(value: Void?) {
     val returnType = returnType.first()
     check(returnType == 'L' || returnType == '[') {
@@ -1707,6 +1868,10 @@ private fun MutableMethod.overrideReturnValue(value: String?, returnLate: Boolea
 /**
  * Remove the given AccessFlags from the field.
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("removeFlags(*flags)", "app.morphe.patcher.util.removeFlags")
+)
 fun MutableField.removeFlags(vararg flags: AccessFlags) {
     val bitField = flags.map { it.value }.reduce { acc, flag -> acc or flag }
     this.accessFlags = this.accessFlags and bitField.inv()
@@ -1808,6 +1973,10 @@ fun MutableMethod.addInstructionsToEnd(smaliInstructions: String) =
  * Overrides the first instruction of a method with a boxed `java.lang.Boolean` return value.
  * None of the method code will ever execute.
  */
+@Deprecated(
+    "BytecodeUtils is now provided by Morphe Patcher",
+    ReplaceWith("returnBoxedBooleanEarly(value)", "app.morphe.patcher.util.returnBoxedBooleanEarly")
+)
 fun MutableMethod.returnBoxedBooleanEarly(value: Boolean) {
     check(returnType == "Ljava/lang/Boolean;" || returnType == "Ljava/lang/Object;") {
         RETURN_TYPE_MISMATCH

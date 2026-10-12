@@ -21,6 +21,8 @@
  * merchantability and fitness for a particular purpose, are disclaimed.
  */
 
+@file:Suppress("DEPRECATION")
+
 package app.morphe.util
 
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
