@@ -1,3 +1,10 @@
+# [1.9.0-dev.9](https://github.com/MorpheApp/morphe-patches-library/compare/v1.9.0-dev.8...v1.9.0-dev.9) (2026-10-14)
+
+
+### Bug Fixes
+
+* Optimize log buffer capture and dialog soft input resize ([#66](https://github.com/MorpheApp/morphe-patches-library/issues/66)) ([18fd7ec](https://github.com/MorpheApp/morphe-patches-library/commit/18fd7ec6b80150360057a467addab8fc022f8f8c))
+
 # [1.9.0-dev.8](https://github.com/MorpheApp/morphe-patches-library/compare/v1.9.0-dev.7...v1.9.0-dev.8) (2026-10-12)
 
 
