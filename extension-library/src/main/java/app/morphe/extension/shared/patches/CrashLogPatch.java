@@ -53,6 +53,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -335,74 +336,49 @@ public final class CrashLogPatch {
         return usedMb + " MB used / " + maxMb + " MB";
     }
 
+    /**
+     * Only APIs available on the minimum SDK are used here. Newer API calls are
+     * outlined by R8 into synthetic classes named after this class, and those names
+     * collide with the different synthetic classes of other extensions that also
+     * contain this class.
+     */
     @SuppressWarnings("deprecation")
     private static String getInstalledVersion(Context context, String packageName) {
         PackageManager packageManager = context.getPackageManager();
         try {
             PackageInfo packageInfo = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-                    ? packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
-                    : packageManager.getPackageInfo(packageName, 0);
-
-            long versionCode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-                    ? packageInfo.getLongVersionCode()
-                    : packageInfo.versionCode;
+                    ? packageManager.getPackageInfo(packageName,
+                            PackageManager.PackageInfoFlags.of(PackageManager.GET_SIGNATURES))
+                    : packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
 
             String versionName = packageInfo.versionName != null ? packageInfo.versionName : "Unknown";
-            String sigHash = getSigningKeyHash(context, packageName);
-            String sigInfo = sigHash != null ? ", sig: " + sigHash : "";
+            String signatureHash = getSignatureHash(packageInfo.signatures);
+            String signatureInfo = signatureHash != null ? ", sig: " + signatureHash : "";
 
-            return versionName + " (" + versionCode + sigInfo + ")";
+            return versionName + " (" + packageInfo.versionCode + signatureInfo + ")";
         } catch (PackageManager.NameNotFoundException ex) {
             return "Not installed";
         }
     }
 
+    /**
+     * @return The first 16 hex characters of the SHA-256 digest of the first signature.
+     */
     @Nullable
-    @SuppressWarnings({"deprecation", "WrongConstant"})
-    private static String getSigningKeyHash(Context context, String packageName) {
-        try {
-            PackageManager pm = context.getPackageManager();
-            Signature[] signatures = null;
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                PackageInfo info = pm.getPackageInfo(
-                        packageName,
-                        PackageManager.PackageInfoFlags.of(PackageManager.GET_SIGNING_CERTIFICATES)
-                );
-                signatures = getSignaturesFromInfo(info);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                PackageInfo info = pm.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES);
-                signatures = getSignaturesFromInfo(info);
-            } else {
-                PackageInfo info = pm.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
-                if (info != null) {
-                    signatures = info.signatures;
-                }
-            }
-
-            if (signatures != null && signatures.length > 0 && signatures[0] != null) {
-                MessageDigest digest = MessageDigest.getInstance("SHA-256");
-                byte[] hash = digest.digest(signatures[0].toByteArray());
-                StringBuilder hex = new StringBuilder();
-                for (int i = 0; i < 8; i++) { // First 8 bytes = 16 hex chars
-                    hex.append(String.format("%02x", hash[i]));
-                }
-                return hex.toString();
-            }
-        } catch (Exception ex) {
-            Logger.printException(() -> "getSigningKeyHash failure: " + packageName, ex);
-        }
-        return null;
-    }
-
-    @Nullable
-    @RequiresApi(Build.VERSION_CODES.P)
-    private static Signature[] getSignaturesFromInfo(PackageInfo info) {
-        if (info == null || info.signingInfo == null) {
+    private static String getSignatureHash(@Nullable Signature[] signatures) {
+        if (signatures == null || signatures.length == 0 || signatures[0] == null) {
             return null;
         }
-        return info.signingInfo.hasMultipleSigners()
-                ? info.signingInfo.getApkContentsSigners()
-                : info.signingInfo.getSigningCertificateHistory();
+        try {
+            byte[] hash = MessageDigest.getInstance("SHA-256").digest(signatures[0].toByteArray());
+            StringBuilder hex = new StringBuilder();
+            for (int i = 0; i < 8; i++) {
+                hex.append(String.format("%02x", hash[i]));
+            }
+            return hex.toString();
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.printException(() -> "getSignatureHash failure", ex);
+            return null;
+        }
     }
 }
