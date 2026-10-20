@@ -31,7 +31,9 @@ import android.app.ActivityManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -50,6 +52,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -332,15 +335,74 @@ public final class CrashLogPatch {
         return usedMb + " MB used / " + maxMb + " MB";
     }
 
+    @SuppressWarnings("deprecation")
     private static String getInstalledVersion(Context context, String packageName) {
         PackageManager packageManager = context.getPackageManager();
         try {
-            return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+            PackageInfo packageInfo = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
                     ? packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
-                    : packageManager.getPackageInfo(packageName, 0)
-            ).versionName;
+                    : packageManager.getPackageInfo(packageName, 0);
+
+            long versionCode = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                    ? packageInfo.getLongVersionCode()
+                    : packageInfo.versionCode;
+
+            String versionName = packageInfo.versionName != null ? packageInfo.versionName : "Unknown";
+            String sigHash = getSigningKeyHash(context, packageName);
+            String sigInfo = sigHash != null ? ", sig: " + sigHash : "";
+
+            return versionName + " (" + versionCode + sigInfo + ")";
         } catch (PackageManager.NameNotFoundException ex) {
             return "Not installed";
         }
+    }
+
+    @Nullable
+    @SuppressWarnings({"deprecation", "WrongConstant"})
+    private static String getSigningKeyHash(Context context, String packageName) {
+        try {
+            PackageManager pm = context.getPackageManager();
+            Signature[] signatures = null;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                PackageInfo info = pm.getPackageInfo(
+                        packageName,
+                        PackageManager.PackageInfoFlags.of(PackageManager.GET_SIGNING_CERTIFICATES)
+                );
+                signatures = getSignaturesFromInfo(info);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                PackageInfo info = pm.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES);
+                signatures = getSignaturesFromInfo(info);
+            } else {
+                PackageInfo info = pm.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
+                if (info != null) {
+                    signatures = info.signatures;
+                }
+            }
+
+            if (signatures != null && signatures.length > 0 && signatures[0] != null) {
+                MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                byte[] hash = digest.digest(signatures[0].toByteArray());
+                StringBuilder hex = new StringBuilder();
+                for (int i = 0; i < 8; i++) { // First 8 bytes = 16 hex chars
+                    hex.append(String.format("%02x", hash[i]));
+                }
+                return hex.toString();
+            }
+        } catch (Exception ex) {
+            Logger.printException(() -> "getSigningKeyHash failure: " + packageName, ex);
+        }
+        return null;
+    }
+
+    @Nullable
+    @RequiresApi(Build.VERSION_CODES.P)
+    private static Signature[] getSignaturesFromInfo(PackageInfo info) {
+        if (info == null || info.signingInfo == null) {
+            return null;
+        }
+        return info.signingInfo.hasMultipleSigners()
+                ? info.signingInfo.getApkContentsSigners()
+                : info.signingInfo.getSigningCertificateHistory();
     }
 }
