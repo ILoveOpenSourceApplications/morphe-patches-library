@@ -1,3 +1,15 @@
+# [2.0.0-dev.1](https://github.com/MorpheApp/morphe-patches-library/compare/v1.9.0-dev.11...v2.0.0-dev.1) (2026-10-22)
+
+
+### Features
+
+* Change to Patcher 2.0 ([3075794](https://github.com/MorpheApp/morphe-patches-library/commit/3075794b16e5baa03f9c681de6efcde092a77fa5))
+
+
+### BREAKING CHANGES
+
+* Patcher dependency is now 2.0 that includes some default behavior changes
+
 # [1.9.0-dev.11](https://github.com/MorpheApp/morphe-patches-library/compare/v1.9.0-dev.10...v1.9.0-dev.11) (2026-10-20)
 
 
